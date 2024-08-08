@@ -57,7 +57,7 @@ function alterarContexto(contexto) {
         contexto.classList.remove('active')
     })
 html.setAttribute('data-contexto', contexto)
-banner.setAttribute('src', `/imagens/${contexto}.png`)
+banner.setAttribute('src', `./imagens/${contexto}.png`)
 switch (contexto) {
     case "foco":
         titulo.innerHTML =  `Otimize sua produtividade,<br>
@@ -94,14 +94,14 @@ function iniciarepausar() {
     if(intervaloId){
         zerar()
         audioPause.play()
-        iconBt.setAttribute('src', '/imagens/play_arrow.png')
+        iconBt.setAttribute('src', './imagens/play_arrow.png')
         return
     }
     intervaloId = setInterval(contagemRegressiva, 1000)
 
     audioPlay.play()
      iniciarPausarBt.textContent = 'Pausar'
-     iconBt.setAttribute('src', '/imagens/pause.png')
+     iconBt.setAttribute('src', './imagens/pause.png')
 
 }
 
