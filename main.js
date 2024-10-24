@@ -117,7 +117,7 @@ function contarTempo(){
     const tempoFormatado = tempo.toLocaleTimeString('pt-br', {minute: '2-digit', second: '2-digit'})
     contadorTempo.innerHTML = `${tempoFormatado}`
 }
-contarTempo()
+contarTempo()   
 
 
 
