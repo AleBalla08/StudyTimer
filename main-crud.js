@@ -41,15 +41,29 @@ function criarElementoTarefa(tarefa) {
     imagemBtn.setAttribute('src', '/imagens-tarefas/edit.png')
     botao.append(imagemBtn)
 
-    botao.onclick = ()=>{
-        const tarefaEditada = prompt('Qual será a nova descrição?')
-        if (tarefaEditada){
-        parag.textContent = tarefaEditada
-        tarefa.descricao = tarefaEditada
+    botao.onclick = async ()=>{
+        const tarefaEditada = await Swal.fire({
+            input: "textarea",
+            inputLabel: "Nova descrição",
+            inputPlaceholder: "Digite algo aqui...",
+            inputAttributes: {
+              "aria-label": "Type your message here"
+            },
+            showCancelButton: true
+          });
+          if (tarefaEditada) {
+            tarefaEditadaArrumada = JSON.stringify(tarefaEditada.value);
+            parag.textContent = tarefaEditadaArrumada.replace(/"/g, "")
+            tarefa.descricao = tarefaEditadaArrumada.replace(/"/g, "")
+            atualizarTarefa()
+            
+          }
+        
+        
         
     }
 
-    }
+    
 
 
 
