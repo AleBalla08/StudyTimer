@@ -1,3 +1,5 @@
+
+
 const html = document.querySelector('html');
 const focoBotao = document.querySelector('.app__card-button--foco');
 const curtoBotao = document.querySelector('.app__card-button--curto');
@@ -78,9 +80,15 @@ switch (contexto) {
 };
 const contagemRegressiva = () =>{
     if(tempoSegundos<= 0){
-        zerar()
-        alert('Tempo finalizado!')
+        
         audioFim.play()
+        Swal.fire('Tempo finalizado!')
+        const focoAtivo = html.getAttribute('data-contexto') == 'foco'
+        if(focoAtivo){
+            const evento = new CustomEvent('FocoFinalizado')
+            document.dispatchEvent(evento)
+        }
+        zerar()
         return
     }
     tempoSegundos -= 1

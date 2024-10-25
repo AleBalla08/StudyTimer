@@ -6,17 +6,20 @@ const editarBtn = document.querySelector('.app_button-edit')
 const cancelarBtn = document.querySelector('.app__form-footer__button--cancel')
 const tarefaAtivaParagrafo= document.querySelector('.app__section-active-task-description')
 const removerConcluidasBtn = document.querySelector('#btn-remover-concluidas')
+const removerTodasBtn = document.querySelector('#btn-remover-todas')
 
 
-const tarefas = JSON.parse(localStorage.getItem('tarefas')) || []
+let tarefas = JSON.parse(localStorage.getItem('tarefas')) || []
 let tarefaSelecionada = null
+let liTarefaSelecionada = null
 
 
 
-function criarTarefa (){
+function atualizarTarefa (){
     localStorage.setItem('tarefas', JSON.stringify(tarefas))
 
 }
+
 
 function criarElementoTarefa(tarefa) {
     const li = document.createElement('li')
@@ -43,7 +46,7 @@ function criarElementoTarefa(tarefa) {
         if (tarefaEditada){
         parag.textContent = tarefaEditada
         tarefa.descricao = tarefaEditada
-        criarTarefa()
+        
     }
 
     }
@@ -54,64 +57,41 @@ function criarElementoTarefa(tarefa) {
     li.append(parag)
     li.append(botao)
 
-  
 
+
+    
+   
+    if(tarefa.completa){
+    li.classList.add('app__section-task-list-item-complete')
+    botao.setAttribute('disabled', 'disabled')
+
+    }
+    else{
     li.onclick = ()=>{
-        document.querySelectorAll('.app__section-task-list-item-active')
-            .forEach(elemento => {
-            elemento.classList.remove('app__section-task-list-item-active')
-        })
-        if (tarefaSelecionada == tarefa){
-            tarefaAtivaParagrafo.textContent = ''
-            li.classList.remove('app__section-task-list-item-active')
-            tarefaSelecionada = null
-            return
-
-        }
-        tarefaSelecionada = tarefa
-        tarefaAtivaParagrafo.textContent = tarefa.descricao
-        li.classList.add('app__section-task-list-item-active')
-    };
-
-    var cont = 0
-    function a(){
-        svg.classList.add('app__section-task-list-item-complete')
-
-    }
-    function b(){
-        svg.classList.remove('app__section-task-list-item-complete')
-    }
-    svg.onclick=()=>{
-        if(cont==0){
-            a();
-            cont+=1;
-            
-        }
-        else{
-            b();
-            cont = 0;
-
-        };
+                document.querySelectorAll('.app__section-task-list-item-active')
+                    .forEach(elemento => {
+                    elemento.classList.remove('app__section-task-list-item-active')
+                })
+                if (tarefaSelecionada == tarefa){
+                    tarefaAtivaParagrafo.textContent = ''
+                    li.classList.remove('app__section-task-list-item-active')
+                    tarefaSelecionada = null
+                    liTarefaSelecionada = null
+                    return
         
+                }
+                
+                tarefaSelecionada = tarefa
+                liTarefaSelecionada = li
+                tarefaAtivaParagrafo.textContent = tarefa.descricao
+                li.classList.add('app__section-task-list-item-active')
+            
     };
-
+}
     
-
-    // removerConcluidasBtn.addEventListener('click', ()=>{
-    // var concluidas = document.getElementsByClassName("app__section-task-list-item-complete");
-    // for(var i = concluidas.length - 1; i >= 0; i--)
-    // {
-    //     concluidas[i].remove()
-    // };
-
-    // });
-    
-
-  
-
 
     return li
-}
+};
 
 
 
@@ -133,7 +113,8 @@ formAdicionarTarefa.addEventListener('submit', (evento)=>{
     tarefas.push(tarefa)
     const elementoTarefa = criarElementoTarefa(tarefa)
     listaTarefas.append(elementoTarefa)
-    criarTarefa()
+    atualizarTarefa()
+    textarea.value = ''
     formAdicionarTarefa.classList.add('hidden')
     
 
@@ -146,3 +127,34 @@ tarefas.forEach(tarefa => {
 
     
 });
+
+document.addEventListener('FocoFinalizado', ()=>{
+    if(tarefaSelecionada && liTarefaSelecionada){
+    liTarefaSelecionada.classList.remove('app__section-task-list-item-active')
+    liTarefaSelecionada.classList.add('app__section-task-list-item-complete')
+    liTarefaSelecionada.querySelector('button').setAttribute('disabled', 'disabled')
+    tarefaSelecionada.completa = true
+    atualizarTarefa()
+    
+    }
+
+
+});
+
+const removerTarefas = (somenteCompletas) => {
+    // const classCompleta = somenteCompletas ? '.app__section-task-list-item-complete' : '.app__section-task-list-item'
+    let seletor = '.app__section-task-list-item'
+    if(somenteCompletas){
+        seletor = '.app__section-task-list-item-complete'
+    }
+    document.querySelectorAll(seletor).forEach(elemento => {
+        elemento.remove()
+    })
+    tarefas = somenteCompletas ? tarefas.filter(tarefa => !tarefa.completa) : []
+    atualizarTarefa()
+}
+
+removerConcluidasBtn.onclick = () => removerTarefas(true)
+
+removerTodasBtn.onclick = ()=> removerTarefas(false)
+
